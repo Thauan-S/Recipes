@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="File.TypeChecker" Version="4.1.1" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="Sqids" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Tropical.Comunication\Tropical.Comunication.csproj" />
+    <ProjectReference Include="..\..\Shared\Tropical.Exceptions\Tropical.Exceptions.csproj" />
+    <ProjectReference Include="..\Tropical.Domain\Tropical.Domain.csproj" />
+    <ProjectReference Include="..\Tropical.Infrastructure\Tropical.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
