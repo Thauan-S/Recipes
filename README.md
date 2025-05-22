@@ -32,5 +32,6 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - Testes end-to-end com **Microsoft.AspNetCore.Mvc.Testing**.
 
 ##Instalando o azurite docker pull mcr.microsoft.com/azure-storage/azurite
+## TODO :Integrar azure pipelines com sonar cloud e elastic apm
 
 
