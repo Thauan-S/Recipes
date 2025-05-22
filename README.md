@@ -31,5 +31,6 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - Cobertura de testes com **coverlet.collector**.
 - Testes end-to-end com **Microsoft.AspNetCore.Mvc.Testing**.
 
+##Instalando o azurite docker pull mcr.microsoft.com/azure-storage/azurite
 
 
