@@ -25,7 +25,7 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - **Sqids**
 - **File.TypeChecker**
 
-## Testes automatizados
+## Testes automatizados 
 
 - Utilização de **xUnit** para testes unitários e de integração.
 - Cobertura de testes com **coverlet.collector**.
