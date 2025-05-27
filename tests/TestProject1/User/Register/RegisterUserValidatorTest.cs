@@ -10,7 +10,7 @@ namespace Validators.test.User.Register
         [Fact(DisplayName="Should retun true when the request is valid")]
        public  void Success()
         {
-            //Arrange 
+            //Arrange  ///TODO USAR O MOQ
             var request = RequestRegisterUserJsonBuilder.Build();
             var validator =new RegisterUserValidator();
 

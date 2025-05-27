@@ -5,13 +5,13 @@ namespace Tropical.Domain.Entities
 {
     public class Recipe:EntityBase
     {
-        // o id está na entitybase
         public required string Title { get; set; }= string.Empty;
-        public CookingTime? CookingTime { get; set; }//enum
-        public Difficulty? Difficulty { get; set; }//enum
-        public IList<Ingredient> Ingredients { get; set; } = new List<Ingredient>(); // IList é o mesmo que List, porém estamos usando a Programação
+        public CookingTime? CookingTime { get; set; }
+        public Difficulty? Difficulty { get; set; }
+        public IList<Ingredient> Ingredients { get; set; } = new List<Ingredient>(); // IList é o mesmo que List,
+                                                                   
         // orientada e interfaces
-        public IList<Instruction> Instructions { get; set; } = [];// é a mesma declaração de cima, porém simplificada
+        public IList<Instruction> Instructions { get; set; } = [];
         public IList<DishType> DishTypes { get; set; } = [];
         public string? ImageIdentifier { get; set; }
         [ForeignKey(nameof(User))]

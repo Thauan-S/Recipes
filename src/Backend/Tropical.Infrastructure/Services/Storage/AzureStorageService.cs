@@ -43,11 +43,11 @@ namespace Tropical.Infrastructure.Services.Storage
             return string.Empty;
         }
 
-        // integraçao com o blob storage do azure
+        // integraçao com o blob storage do azure, só que localmente com azurite emulator
         public async Task Updload(User user, Stream file, string fileName)
         {
            var container= _blobServiceClient.GetBlobContainerClient(user.UserId.ToString());
-           await container.CreateIfNotExistsAsync();// cria o container no azure caso nao exista
+           await container.CreateIfNotExistsAsync();
            
             var blobClient= container.GetBlobClient(fileName);
                                               // sobrescreve o nome se o arquivo já existir

@@ -11,7 +11,7 @@ namespace UseCases.Test.User.Register
 {
     public class RegisterUserUseCaseTest
     {
-
+        ///TODO USAR O MOQ
         [Fact(DisplayName = "Should retun true when the request is valid")]
         public async Task Success()
         {

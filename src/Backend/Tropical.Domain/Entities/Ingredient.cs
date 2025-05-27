@@ -8,6 +8,6 @@ namespace Tropical.Domain.Entities
         [ForeignKey(nameof(Recipe))]
         public required long RecipeId { get; set; }
         public required Recipe Recipe { get; set; }
-        //o ondelete deve ser feito nas tabelas filhas, nesse caso aqui
+        ///TODO O ondelete cascade deve ser feito nas tabelas filhas, nesse caso aqui
     }
 }

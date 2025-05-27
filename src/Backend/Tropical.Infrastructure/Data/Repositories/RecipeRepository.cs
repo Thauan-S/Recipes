@@ -23,12 +23,12 @@ namespace Tropical.Infrastructure.Data.Repositories
 
         public async Task<IList<Recipe>> Filter(User user, FilterRecipesDto filters)
         {
-            // quando não vou atualizar nenhum dado , apenas ler, devo usar o asnotracking()
+            
             var query = _appDbContext
                 .Recipes
                 .AsNoTracking()
-                .Include(recipe => recipe.Ingredients) // join , pois o csharp só carrega os dados ligados se eu pedir
-                .Where(r => r.UserId == user.Id && r.Active); // somente eu posso ver minha receita
+                .Include(recipe => recipe.Ingredients) 
+                .Where(r => r.UserId == user.Id && r.Active);
             if (filters.Difficulties.Any())
             {
                 query = query.Where(r => r.Difficulty.HasValue
@@ -57,7 +57,7 @@ namespace Tropical.Infrastructure.Data.Repositories
         async Task<Recipe?> IRecipeReadOnlyRepository.GetById(User user, long recipeId)
         {   // note que as duas GetById() não são públicas
             return await GetFullRecipe()   
-                .AsNoTracking()             // somente eu posso ver minha receita
+                .AsNoTracking()             
                 .FirstOrDefaultAsync(recipe => recipe.Active && recipe.UserId == user.Id && recipe.Id == recipeId);
         }
 

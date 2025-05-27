@@ -33,9 +33,7 @@ namespace Tropical.Infrastructure.Data.Repositories
         public async Task<User?> GetUserByEmailAndPassword(string email, string password)
         {
              return await _dbContext.Users
-                .AsNoTracking() // se eu não estiver fazendo atualização do dado savechangesAsync() ou delete()
-                                // devo   usar asNoTraking() por questões de performance, assim o ef não fica fazendo tracking 
-                                //desse dado
+                .AsNoTracking() 
                 .FirstOrDefaultAsync(u => 
             u.Email.Equals(email) && u.Password.Equals(password) && u.Active );
            
@@ -53,7 +51,7 @@ namespace Tropical.Infrastructure.Data.Repositories
                 return;
             }
             var recipes=_dbContext.Recipes.Where(recipe => recipe.UserId == user.Id);
-            // posso adicionar o ondelete cascade em minha table , assim não precisaria deletar as recipes primeiro
+            ///TODO posso adicionar o ondelete cascade em minha table , assim não precisaria deletar as recipes primeiro
             _dbContext.Recipes.RemoveRange(recipes);
             _dbContext.Users.Remove(user);
         }
