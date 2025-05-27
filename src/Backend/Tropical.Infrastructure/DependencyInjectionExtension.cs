@@ -102,7 +102,7 @@ namespace Tropical.Infrastructure
         {
             var expirationTimeMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpirationTimeMinutes");
             var signingKey = configuration.GetValue<string>("Settings:Jwt:SigningKey");
-            .
+            
             services.AddScoped<IAccessTokenGenerator>(option =>
             new JwtTokenGenerator(expirationTimeMinutes, signingKey!));
             //configuração do validator do token
