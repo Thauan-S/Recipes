@@ -29,8 +29,6 @@ namespace Tropical.Application.UseCases.Recipe.Delete
             _blobStorageService = blobStorageService;
         }
 
-
-
         public  async Task Execute(long id)
         {
             var loggedUser = await _loggedUser.User();

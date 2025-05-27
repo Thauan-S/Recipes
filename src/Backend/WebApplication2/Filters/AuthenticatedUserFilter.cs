@@ -12,7 +12,7 @@ namespace Tropical.API.Filters
     public class AuthenticatedUserFilter : IAsyncAuthorizationFilter
     //ou :IauthorizationFilter <- usado quando não precisarei fazer métodos assincronos
     {
-        // verifica se o token é valido , verifica se o usuário está authenticado
+        // verifica se o token é valido , verifica se o usuário está autenticado
         private readonly IAccessTokenValidator _accessTokenValidator;
         private readonly IUserReadOnlyRepository _userReadOnlyRepository;
 
@@ -46,7 +46,7 @@ namespace Tropical.API.Filters
                 }
                 );
             }
-            catch //o resto das exceções cai aqui , qualquer uma que seja
+            catch 
             {
                 context.Result = new UnauthorizedObjectResult(
                     new ResponseErrorJson(ResourceMessagesException.USER_WITHOUT_PERMISSSION_ACCESS_RESOURCE));
@@ -61,8 +61,8 @@ namespace Tropical.API.Filters
             }
             return authentication["Bearer ".Length..].Trim();
         }
-        //criar em api AuthenticatedUserFilter filter
-        // pronto , agora é so adicionar o [AuthenticatedUser ao controller]
+       
+        
 
     }
 }

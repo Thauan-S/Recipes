@@ -19,8 +19,8 @@ namespace Tropical.Application.Extension
                     response.ImageUrl = await blobStorageService.GetFileUrl(user, recipe.ImageIdentifier);
                 }
                 
-                return response; // como aqui eu retorno minha response tenho que esperar todas terminarem
-                // se não o código proseguiria para as linhas seguintes após o WhenAll()
+                return response; 
+               
             });
             var response= await Task.WhenAll(result);
             return response;
@@ -28,8 +28,6 @@ namespace Tropical.Application.Extension
             //var result = recipes.Select()rec;
             ///TODO EXECUÇÃO PARALELA///
             //foreach (var recipe in recipes)
-            //{// observe que se eu tiver 100 receitas na minha lista
-            //   // e tenha que esperar 1 segundo para cada GetFileUrl();
             //   var response= mapper.Map<ResponseShortRecipeJson>(recipe);
             //    if(recipe.ImageIdentifier != null)
             //    {                    // blobstorageService

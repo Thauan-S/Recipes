@@ -190,6 +190,9 @@
     <value>17 / 5.000
 unknown error</value>
   </data>
+  <data name="USER_NOT_IS_AUTHENTICATED" xml:space="preserve">
+    <value>The user not is autheticated</value>
+  </data>
   <data name="USER_WITHOUT_PERMISSSION_ACCESS_RESOURCE" xml:space="preserve">
     <value>User not have permission to perform this action</value>
   </data>

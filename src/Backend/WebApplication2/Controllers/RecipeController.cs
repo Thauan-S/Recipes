@@ -12,14 +12,6 @@ using Tropical.Comunication.Responses;
 
 namespace Tropical.API.Controllers
 {
-    public  class  MinhaClasse{
-    public  string Teste { get; set; }
-        public MinhaClasse(string i)
-        {
-            this.Teste = i;
-        }
-
-    }
     [AuthenticatedUser]
     public class RecipeController : TropicalBaseController
     {
@@ -35,12 +27,6 @@ namespace Tropical.API.Controllers
         }
 
         [HttpPost("filter")]
-        // observe que o tipo da requisição é post por conta do limite de caracteres da URL
-        // como tenho vários parâmetros de filtro  o ideal é utilizar o tipo post
-        // também poderia usar QUERY STRINGS
-        //TODO usar QUERY STRINGS  REGRA :
-        //TODA VEZ QUE RECEBO UM VALOR E ESSE VALOR MODIFICA O RESULTADO DEVO PASSAR OS VALORES
-        // NO CORPO OU QUERY STRING
         [ProducesResponseType(typeof(ResponseRecipesJson), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(statusCode: StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Filter(
@@ -56,29 +42,26 @@ namespace Tropical.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")] // ids sempre na rota  /algo/id
+        [Route("{id}")]
         [ProducesResponseType(typeof(ResponseRecipeJson), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(statusCode: StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetById(
            [FromServices] IGetRecipeByIdUseCase useCase,
-           [FromRoute][ModelBinder(typeof(MyTropicalBinder))] long id) // binder transorma o id recebido em string para long
+           [FromRoute][ModelBinder(typeof(MyTropicalBinder))] long id)
         {
-            // checar pasta BACK END/API/BINDERS
-            //como meu id está criptografado em formato de string
-            // usei um  model binder personalizado para converter
-            // a string do id que vem do front para um long da entity
+
             var response = await useCase.Execute(id);
             return Ok(response);
         }
 
         [HttpPut]
-        [Route("{id}")] // ids sempre na rota /algo/id
+        [Route("{id}")] 
         [ProducesResponseType(statusCode: StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorJson), statusCode: StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(
            [FromServices] IUpdateRecipeUseCase useCase,
            [FromRoute][ModelBinder(typeof(MyTropicalBinder))] long id,
-           [FromBody] RequestRecipeJson request) // binder transorma o id recebido em string para long
+           [FromBody] RequestRecipeJson request)
         {
             await useCase.Execute(id, request);
 
@@ -86,7 +69,7 @@ namespace Tropical.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")] // ids sempre na rota  /algo/id
+        [Route("{id}")] 
         [ProducesResponseType(statusCode: StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorJson), statusCode: StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(
@@ -107,7 +90,7 @@ namespace Tropical.API.Controllers
             IFormFile file 
             )
         {
-            // encontrar uma forma de validar os arquivos
+          
             await useCase.Execute(id,file);
             return NoContent();
         }

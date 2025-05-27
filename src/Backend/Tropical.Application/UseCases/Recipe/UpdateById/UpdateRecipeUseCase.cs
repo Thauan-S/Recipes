@@ -3,7 +3,6 @@ using AutoMapper;
 using Tropical.Comunication.Requests;
 using Tropical.Domain.Repositories;
 using Tropical.Domain.Repositories.Recipe;
-using Tropical.Domain.Repositories.User;
 using Tropical.Domain.Services.LoggedUser;
 using Tropical.Exceptions;
 using Tropical.Exceptions.Exceptions;
@@ -35,14 +34,12 @@ namespace Tropical.Application.UseCases.Recipe.UpdateById
             if (recipe == null) {
                 throw new NotFoundException(ResourceMessagesException.RECIPE_NOT_FOUND);
             }
-            // observe o clear , como eu recebo minha receita e meu id ,
-            // eu posso limpar todos os campos ao invés de ficar verificando qual campo mudou 
             recipe.Instructions.Clear();
             recipe.Ingredients.Clear();
             recipe.DishTypes.Clear();
 
-            _mapper.Map(request,recipe); // observe que aqui já tenho a instância da receita recuperada do db,
-                                         // e como já tenho a origem (request) enviarei para o destino (recipe)
+            _mapper.Map(request,recipe);
+                                         
              var instructions =request.Instructions.OrderBy(i=>i.Step).ToList();
             for(var i=0; i< instructions.Count; i++)
             {

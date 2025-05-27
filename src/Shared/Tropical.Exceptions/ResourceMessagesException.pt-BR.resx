@@ -189,6 +189,9 @@
   <data name="UNKNOWN_ERROR" xml:space="preserve">
     <value>Erro desconhecido</value>
   </data>
+  <data name="USER_NOT_IS_AUTHENTICATED" xml:space="preserve">
+    <value>Usuário não está autenticado</value>
+  </data>
   <data name="USER_WITHOUT_PERMISSSION_ACCESS_RESOURCE" xml:space="preserve">
     <value>O usuário não tem permissão para realizar esta operação</value>
   </data>

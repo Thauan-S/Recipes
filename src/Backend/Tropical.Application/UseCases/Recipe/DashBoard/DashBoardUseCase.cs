@@ -30,8 +30,7 @@ namespace Tropical.Application.UseCases.Recipe.DashBoard
             var recipes = await _repository.GetForDashBoard(loggedUser);
             return new ResponseRecipesJson
             {
-                //Recipes = _mapper.Map<IList<ResponseShortRecipeJson>>(recipes)
-                //usando extension methods
+               
                 Recipes = await recipes.MapToShortRecipeJson(loggedUser, _blobStorageService, _mapper)
             };
         }

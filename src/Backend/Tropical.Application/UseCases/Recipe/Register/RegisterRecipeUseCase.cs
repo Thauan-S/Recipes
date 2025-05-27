@@ -61,7 +61,7 @@ namespace Tropical.Application.UseCases.Recipe.Register
                 //} 
                 if (!IsvalidImage)
                 {
-                    throw new ErrorOnValidationException([ResourceMessagesException.ONLY_IMAGES_SUPPORTED]);
+                    throw new ErrorOnValidationException([ResourceMessagesException.OLY_IMAGES_SUPPORTED]);
                 }
                // fileStream.Position = 0;
                 // recipe.ImageIdentifier = $"{Guid.NewGuid()}{Path.GetExtension(request.Image.FileName)}";

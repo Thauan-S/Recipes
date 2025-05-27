@@ -9,10 +9,13 @@ using Tropical.API.Token;
 using Tropical.API.Filters;
 using Tropical.API.BackGroundServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Configuration;
+using Elastic.Apm.NetCoreAll;
+using Tropical.Infrastructure.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(options => // adiciona o converter para remover espaços em branco no metodo post do user
+builder.Services.AddControllers().AddJsonOptions(options => 
 options.JsonSerializerOptions.Converters.Add(new StringConverter()));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -46,8 +49,7 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
             }
         });
-    }); // configurando swagger para login
-// passando o Exception filter nas dependências
+    });
 builder.Services.AddMvc(options=>options.Filters.Add(typeof (ExceptionFilter)));
 
 //define todas as urls para minúsculo
@@ -55,26 +57,30 @@ builder.Services.AddRouting(options=>
 options.LowercaseUrls=true);
 
 
-//ADICIONANDO DI
-//passando a configuration para os Services
+// DI
 builder.Services.AddAplication(builder.Configuration);//As dependencias são injetadas em Dependency InjectionExtension
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// adicionando minha classe que está executando em segundo plano;
-builder.Services.AddHostedService<DeleteUserService>();
-//
+// adicionando backgroudService;
+if ( !builder.Configuration.IsUnitTestEnvironment()) {
+    //se não for um teste de integação
+    builder.Services.AddHostedService<DeleteUserService>();
+    AddGoogleAuthentication();
+}
 builder.Services.AddScoped<ITokenProvider,HttpContextTokenValue>();
 builder.Services.AddHttpContextAccessor();
 
-//preparando controllers para receber o token 
-//Devo instalar Microsoft.AspNetCore.Authentication.JwtBearer
-// e inserir o código aula 100, porém ele fez um  authorize personalizado
-//Domain IAccessTokenValidator
 
+
+// Microsoft.AspNetCore.Authentication.JwtBearer
 
 var app = builder.Build();
 
+var serverUrls = builder.Configuration["ELASTIC_APM_SERVER_URLS"];
+Console.WriteLine($"APM Server URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: {serverUrls}");
+
+app.UseAllElasticApm(builder.Configuration);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -91,16 +97,23 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-//void AddGoogleAuthenticationOptions()
-//{
-//    var clientId = builder.Configuration.GetValue<string>("Settings:Google:ClientId");
-//    var clientSecret = builder.Configuration.GetValue<string>("Settings:Google:ClientSecret");
-//    builder.Services.AddAuthentication(config =>
-//    {
-//        config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+void AddGoogleAuthentication()
+{
+    var clientId = builder.Configuration.GetValue<string>("Settings:Google:ClientId")!;
+    var clientSecret = builder.Configuration.GetValue<string>("Settings:Google:ClientSecret")!;
+    builder.Services.AddAuthentication(config =>
+    {
+        config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
-//    }).AddCookie().ad;
-//}
+    }).AddCookie()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = clientId;
+        googleOptions.ClientSecret = clientSecret;
+    })
+    ;
+    ///TODO ADD other 
+}
 public partial class Program
 {
 

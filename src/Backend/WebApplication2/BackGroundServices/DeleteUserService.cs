@@ -5,22 +5,26 @@ using Tropical.Infrastructure.Services.ServiceBus;
 namespace Tropical.API.BackGroundServices
 {
     public class DeleteUserService : BackgroundService
-    {   // NÃO ESQUECER DE ADICIONAR EM MEU PROGRAM.CS
+    {   
+        /// <summary>
+        /// Injetada no program.cs
+        /// </summary>
         private readonly IServiceProvider _services;
         private readonly ServiceBusProcessor _processor;
-       
+        private   readonly ILogger<DeleteUserService> _logger;
 
-        public DeleteUserService(DeleteUserProcessor processor, IServiceProvider services)
+        public DeleteUserService(DeleteUserProcessor processor, IServiceProvider services, ILogger<DeleteUserService> logger)
         {
             _processor = processor.GetProcessor(); // observe a injeção de dependências em infra
             _services = services;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             
             _processor.ProcessMessageAsync += ProcessMessageAsync; // executa a func sempre q recebe uma msg
-            _processor.ProcessErrorAsync += ExceptionReceivedHandler;// observe o atributo do processor ErrorAsync
+            _processor.ProcessErrorAsync += ExceptionReceivedHandler;// ErrorAsync
                                                                      //// e o parametro da ExceptionReceivedHandler;
             await _processor.StartProcessingAsync(stoppingToken);
         }
@@ -28,18 +32,34 @@ namespace Tropical.API.BackGroundServices
         {
             
             var message = eventArgs.Message.Body.ToString();
-
+            
             var userIdentifier = Guid.Parse(message);
             var scope = _services.CreateScope();
-            // obtem a referência da interface
+            // obtém a referência da interface
             var deleteUserUseCase = scope.ServiceProvider.GetRequiredService<IDeleteUserAccountUseCase>();
-            // devo adicionar ao program o hostprovider
+            
 
             await deleteUserUseCase.Execute(userIdentifier);
         }
-        private static Task ExceptionReceivedHandler(ProcessErrorEventArgs ex)
+        private  Task ExceptionReceivedHandler(ProcessErrorEventArgs args)
         {
-            Console.WriteLine(ex.Exception);
+              var exeption = args.Exception;
+
+    _logger.LogError(exeption, 
+        @"Erro ao processar mensagem no Service Bus. 
+        Namespace: {Namespace}
+        Entity: {EntityPath}
+        Operation: {ErrorSource}
+        Detalhes da exceção: {ExceptionMessage}",
+        args.FullyQualifiedNamespace,
+        args.EntityPath,
+        args.ErrorSource,
+        exeption.Message);
+            _logger.LogError($"ERROOOOOOOOOOOOOO logado : {exeption.Message}");
+            _logger.LogError($"ERROOOOOOOOOOOOO logado: {exeption.InnerException.Message}");
+            _logger.LogError($"ERROOOOOOOOOOOOO logado: {exeption.InnerException}");
+
+            Console.WriteLine(exeption.Message);
             return Task.CompletedTask;
         }
         /// <summary>

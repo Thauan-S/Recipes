@@ -57,6 +57,14 @@ namespace Tropical.Infrastructure.Data.Repositories
             _dbContext.Recipes.RemoveRange(recipes);
             _dbContext.Users.Remove(user);
         }
+
+        public Task<User?> GetByEmail(string email)
+        {
+            return _dbContext
+                .Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u=> u.Active && u.Email.Equals(email));
+        }
     }
 }
 

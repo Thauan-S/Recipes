@@ -234,7 +234,7 @@ namespace Tropical.Exceptions {
         /// <summary>
         ///   Looks up a localized string similar to Only images are supported.
         /// </summary>
-        public static string ONLY_IMAGES_SUPPORTED {
+        public static string OLY_IMAGES_SUPPORTED {
             get {
                 return ResourceManager.GetString("OLY_IMAGES_SUPPORTED", resourceCulture);
             }
@@ -274,6 +274,15 @@ namespace Tropical.Exceptions {
         public static string UNKNOWN_ERROR {
             get {
                 return ResourceManager.GetString("UNKNOWN_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user not is autheticated.
+        /// </summary>
+        public static string USER_NOT_IS_AUTHENTICATED {
+            get {
+                return ResourceManager.GetString("USER_NOT_IS_AUTHENTICATED", resourceCulture);
             }
         }
         

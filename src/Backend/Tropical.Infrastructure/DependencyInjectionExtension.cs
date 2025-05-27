@@ -20,12 +20,14 @@ using Tropical.Domain.Services.LoggedUser;
 using Tropical.Infrastructure.Services.ServiceBus;
 using Tropical.Domain.Services.ServiceBus;
 using Azure.Messaging.ServiceBus;
+using Microsoft.Extensions.Logging;
 
 
 namespace Tropical.Infrastructure
 {
     public static class DependencyInjectionExtension
     {
+       
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             AddTokens(services, configuration);
@@ -67,10 +69,23 @@ namespace Tropical.Infrastructure
         private static void AddServiceBus(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString= configuration.GetValue<string>("Settings:ServiceBus:DeleteUserAccount");
-            ///var certificate=new
+
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>()
+                                        .CreateLogger("DependencyInjectionExtension");
+
+            logger.LogInformation("Service Bus connection string!!!!!!!!!!!!!!!: {ConnectionString}", connectionString);
+
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {// verifica testes de integração 
+                return;
+            }
+
+
             var client = new ServiceBusClient(connectionString, new ServiceBusClientOptions()
             {
-                TransportType = ServiceBusTransportType.AmqpTcp,// o normal é amqtcp websockets, mas como meu service bus emulator não aceita , tenho que usar esse
+                TransportType = ServiceBusTransportType.AmqpTcp,// service bus emulator não aceita websockets
             });
             // estou simulando o serviceBus Localmente no docker
             var deletequeue = new DeleteUserQueue(client.CreateSender("queue.1"));
@@ -97,9 +112,13 @@ namespace Tropical.Infrastructure
         private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetValue<string>("Settings:BlobStorage:Azure");
-                                                            // perceba que na classe do AzureStorageService eu preciso do meu BlobServiceClient, e como é uma classe
-                                                            // devo instancia-lo aqui.
-            services.AddScoped<IBlobStorageService>(c => new AzureStorageService(new BlobServiceClient(connectionString)));
+            // perceba que na classe do AzureStorageService eu preciso do meu BlobServiceClient, e como é uma classe
+            // devo instancia-lo aqui.
+            if (!string.IsNullOrEmpty(connectionString))
+            {// verifica se está realizando teste de integração 
+                services.AddScoped<IBlobStorageService>(c => new AzureStorageService(new BlobServiceClient(connectionString)));
+            }
+           
         }
         private static void AddPasswordEncripter(IServiceCollection services, IConfiguration configuration)
         {

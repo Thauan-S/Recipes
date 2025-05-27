@@ -43,7 +43,7 @@ namespace Tropical.Application.UseCases.Recipe.UpdateImageById
             //File.TypeChecker package
            if(!isValidImage)
             {// PNG || JPG // verificar a classe no método de extensão .Is 
-                throw new ErrorOnValidationException(new List<string> { ResourceMessagesException.ONLY_IMAGES_SUPPORTED });
+                throw new ErrorOnValidationException(new List<string> { ResourceMessagesException.OLY_IMAGES_SUPPORTED });
             }
             if (string.IsNullOrEmpty(recipe.ImageIdentifier))
             {
@@ -54,7 +54,7 @@ namespace Tropical.Application.UseCases.Recipe.UpdateImageById
                 await _unityOfWork.Commit();
             }
             //fileStream.Position = 0;// importante para uso em streams
-            // ele garante que o stream seja lido do início, pois  a validação acima move o inicio do arr para 20
+            // ele garante que o stream seja lido do início
             await _blobStorageService.Updload(loggedUser,fileStream,recipe.ImageIdentifier);
         }
      }

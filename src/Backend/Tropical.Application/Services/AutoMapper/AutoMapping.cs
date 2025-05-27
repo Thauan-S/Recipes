@@ -6,7 +6,7 @@ using Tropical.Comunication.Enums;
 using Sqids;
 
 namespace Tropical.Application.Services.autoMapper
-{// essa classe serve como configuração do automapper 
+{
     public  class AutoMapping:Profile
     {
         private readonly SqidsEncoder<long> _idEncoder;

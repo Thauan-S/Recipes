@@ -12,7 +12,7 @@ using Tropical.Comunication.Requests;
 namespace Tropical.API.Controllers
 {
 
-    public class UserController : TropicalBaseController // controller para mudar a rota globalmente
+    public class UserController : TropicalBaseController 
     {
         
         [HttpPost]
@@ -20,17 +20,17 @@ namespace Tropical.API.Controllers
         public async Task <IActionResult> Register(
             [FromServices]IRegisterUserUseCase useCase,
             [FromBody] RequestRegisterUserJson user)
-        {// [FromServices] ja recebe a interface por injeção de dependência configurado na classe DependencyInjectionExtension
+        {
                 var result = await useCase.Execute(user);
                 return Created(string.Empty, result);
         }
         [HttpGet]
-        [AuthenticatedUser] // é igual ao  o [Authorize(Roles ="")],mas personalizado
+        [AuthenticatedUser] 
         [ProducesResponseType(typeof(ResponseRegisterUserJson), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserProfile(
             [FromServices] IGetUserProfileUseCase useCase
             )
-        {// [FromServices] ja recebe a interface por injeção de dependência configurado na classe DependencyInjectionExtension
+        {
             var result = await useCase.Execute();
             return Ok(result);
         }
@@ -41,7 +41,7 @@ namespace Tropical.API.Controllers
             [FromServices] IUpdateUserUseCase useCase,
             [FromBody] RequestUpdateUserJson request
             )
-        {// [FromServices] ja recebe a interface por injeção de dependência configurado na classe DependencyInjectionExtension
+        {
             await useCase.Execute(request);
             return NoContent();
         }
@@ -52,7 +52,7 @@ namespace Tropical.API.Controllers
            [FromServices] IChangePasswordUseCase useCase,
            [FromBody] RequestChangePasswordUserJson request
            )
-        {// [FromServices] ja recebe a interface por injeção de dependência configurado na classe DependencyInjectionExtension
+        {
             await useCase.Execute(request);
             return NoContent();
         }
