@@ -37,8 +37,8 @@ namespace Tropical.Application.UseCases.User.ChangePassword
         private void Validate(RequestChangePasswordUserJson request,Domain.Entities.User loggedUser)
         {
             var result = new ChangePasswordValidator().Validate(request);
-            var currentPasswordEncripted = _passwordEncripter.Encrypt(request.Password);
-            if (!currentPasswordEncripted.Equals(loggedUser.Password))
+            var passwordIsInValid = !_passwordEncripter.IsValid(request.Password,loggedUser.Password);
+            if (passwordIsInValid)
             {
                 result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, ResourceMessagesException.INVALID_PASSWORD));
             }

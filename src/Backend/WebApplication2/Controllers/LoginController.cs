@@ -13,11 +13,18 @@ namespace Tropical.API.Controllers
 
     public class LoginController : TropicalBaseController 
     {
+        private readonly ILogger<LoginController> _logger;
+       
+public LoginController(ILogger<LoginController> logger)
+        {
+            _logger = logger;
+        }
         [HttpPost]
         [ProducesResponseType(typeof(ResponseRegisterUserJson), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromServices] IDoLoginUseCase useCase,[FromBody] RequestLoginJson request)
         {
+            _logger.LogInformation("Tentando fazer login");
             var response = await useCase.Execute(request);
             return Ok(response);
         }

@@ -7,11 +7,12 @@ using Microsoft.OpenApi.Models;
 using Tropical.Domain.Security.Tokens;
 using Tropical.API.Token;
 using Tropical.API.Filters;
-using Tropical.API.BackGroundServices;
+//using Tropical.API.BackGroundServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Configuration;
 using Elastic.Apm.NetCoreAll;
 using Tropical.Infrastructure.Extensions;
+using Tropical.API.BackGroundServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -79,7 +80,7 @@ var app = builder.Build();
 
 var serverUrls = builder.Configuration["ELASTIC_APM_SERVER_URLS"];
 Console.WriteLine($"APM Server URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: {serverUrls}");
-
+Console.WriteLine($"ENVIRONMENT!!!!!!!: {app.Environment.EnvironmentName}");
 app.UseAllElasticApm(builder.Configuration);
 
 // Configure the HTTP request pipeline.
@@ -88,9 +89,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 app.UseMiddleware<CultureMiddleware>();
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

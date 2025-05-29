@@ -17,9 +17,9 @@ namespace CommonTestUtilities.Repositories
         {
             _userReadOnlyRepositoryMock.Setup(r => r.ExistActiveUserWithEmail(email)).ReturnsAsync(true);
         }
-        public void GetByEmailAndPassword(User user)
+        public void GetByEmail(User user)
         {
-            _userReadOnlyRepositoryMock.Setup(r => r.GetUserByEmailAndPassword(user.Email,user.Password)).ReturnsAsync(user);
+            _userReadOnlyRepositoryMock.Setup(r => r.GetByEmail(user.Email)).ReturnsAsync(user);
         }
         public  IUserReadOnlyRepository Build()
         {

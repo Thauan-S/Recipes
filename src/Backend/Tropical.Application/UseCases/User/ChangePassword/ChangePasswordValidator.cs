@@ -1,9 +1,8 @@
 ﻿
-using System.Net.Mail;
 using FluentValidation;
 using Tropical.Application.SharedValidators;
 using Tropical.Comunication.Requests;
-using Tropical.Exceptions;
+
 
 namespace Tropical.Application.UseCases.User.Register
 {

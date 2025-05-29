@@ -21,6 +21,8 @@ using Tropical.Infrastructure.Services.ServiceBus;
 using Tropical.Domain.Services.ServiceBus;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Logging;
+using Tropical.Infrastructure.Security.Tokens.Refresh;
+using Tropical.Domain.Repositories.RefreshToken;
 
 
 namespace Tropical.Infrastructure
@@ -32,7 +34,7 @@ namespace Tropical.Infrastructure
         {
             AddTokens(services, configuration);
             AddInfrastructure(services);
-            AddPasswordEncripter(services, configuration);
+            AddPasswordEncripter(services);
             AddRepositories(services);
             AddAzureStorage(services,configuration);
             AddServiceBus(services,configuration);
@@ -65,6 +67,7 @@ namespace Tropical.Infrastructure
             services.AddScoped<IRecipeWriteOnlyRepository, RecipeRepository>();
             services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepository>();
 
+            services.AddScoped<ITokenRepository, RefreshTokenRepository>();
         }
         private static void AddServiceBus(IServiceCollection services, IConfiguration configuration)
         {
@@ -105,9 +108,13 @@ namespace Tropical.Infrastructure
             
             services.AddScoped<IAccessTokenGenerator>(option =>
             new JwtTokenGenerator(expirationTimeMinutes, signingKey!));
+
             //configuração do validator do token
             services.AddScoped<IAccessTokenValidator>(option =>
             new JwtTokenValidator(signingKey!));
+
+            services.AddScoped<IRefreshTokenGenerator,RefreshTokenGenerator>();
+           
         }
         private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
         {
@@ -120,10 +127,9 @@ namespace Tropical.Infrastructure
             }
            
         }
-        private static void AddPasswordEncripter(IServiceCollection services, IConfiguration configuration)
+        private static void AddPasswordEncripter(IServiceCollection services)
         {
-            var additionalKey = configuration.GetSection("Settings:Password:AdditionalKey").Value;
-            services.AddScoped<IPasswordEncripter>(options => new Sha512Encripter(additionalKey!));
+            services.AddScoped<IPasswordEncripter,PasswordEncripter>();
         }
     }
 }

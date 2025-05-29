@@ -7,7 +7,7 @@ namespace CommonTestUtilities.Cryptography
     {
         public static IPasswordEncripter Build()
         {
-            return new Sha512Encripter("wwwwww");
+            return new PasswordEncripter();
         }
     }
 }

@@ -13,6 +13,7 @@ using Tropical.Application.UseCases.Recipe.GetById;
 using Tropical.Application.UseCases.Recipe.Register;
 using Tropical.Application.UseCases.Recipe.UpdateById;
 using Tropical.Application.UseCases.Recipe.UpdateImageById;
+using Tropical.Application.UseCases.Token.RefreshToken;
 using Tropical.Application.UseCases.User.ChangePassword;
 using Tropical.Application.UseCases.User.Delete.Delete;
 using Tropical.Application.UseCases.User.Delete.RequestDeleteUseCase;
@@ -51,6 +52,8 @@ namespace Tropical.Application
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
             services.AddScoped<IRequestDeleteUserUseCase, RequestDeleteUserUseCase>();
             services.AddScoped<IDeleteUserAccountUseCase, DeleteUserAccountUseCase>();
+            services.AddScoped<IUserRefreshTokenUseCase, UserRefreshTokenUseCase>();
+            
 
             services.AddScoped<IExternalLoginUseCase, ExternalLoginUseCase>();
 

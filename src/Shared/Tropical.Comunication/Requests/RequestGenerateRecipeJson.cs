@@ -2,6 +2,6 @@
 {
     public class RequestGenerateRecipeJson
     {
-        public IList<string> Ingredients { get; set; }
+        public IList<string> Ingredients { get; set; } = new List<string>();
     }
 }

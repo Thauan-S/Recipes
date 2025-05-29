@@ -26,7 +26,7 @@ namespace UseCases.Test.Login.DoLoginUseCaseTest
                 Password = password,
             });
             Assert.NotNull(result);
-            Assert.NotNull(result.Token);
+            Assert.NotNull(result.Tokens.AccesToken);
             Assert.NotEmpty(result.Name);
             Assert.Equal(user.Name, result.Name);
         }
@@ -49,7 +49,7 @@ namespace UseCases.Test.Login.DoLoginUseCaseTest
             var userReadOnlyRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
             if (user != null)
             {
-                userReadOnlyRepositoryBuilder.GetByEmailAndPassword(user);
+                userReadOnlyRepositoryBuilder.GetByEmail(user);
             }
               return new DoLoginUseCase( passwordEncripter, userReadOnlyRepositoryBuilder.Build(), accessTokenGenerator);
         }

@@ -9,6 +9,13 @@ namespace Tropical.Exceptions.Filters
     public class ExceptionFilter: IExceptionFilter
     { //TODO ESTOU FERINDO O PRINCÍPIO O DO SOLID , POIS TODA VEZ QUE TENHO UMA NOVA EXEÇÃO TENHO QUE MUDAR ESTA CLASSE
         //ADICIONANDO UM IF ELSE A MAIS
+        private readonly ILogger<ExceptionFilter> _logger;
+
+        public ExceptionFilter(ILogger<ExceptionFilter> logger)
+        {
+            _logger = logger;
+        }
+
         public void OnException(ExceptionContext context)
         {
             if(context.Exception is MyTropicalException)// o tipo de context=System.error
@@ -38,6 +45,7 @@ namespace Tropical.Exceptions.Filters
         }
         private void ThrowUnknowException(ExceptionContext context)// exceção padrão 500    
         {
+            _logger.LogError($"EXCEPTION!!! {context.Exception.Message}");
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 context.Result = new ObjectResult(new ResponseErrorJson(ResourceMessagesException.UNKNOWN_ERROR));
         }

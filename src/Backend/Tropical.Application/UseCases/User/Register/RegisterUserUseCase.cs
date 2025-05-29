@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
 using Tropical.Comunication.Requests;
+using Tropical.Comunication.Responses;
+using Tropical.Domain.Entities;
 using Tropical.Domain.Repositories;
+using Tropical.Domain.Repositories.RefreshToken;
 using Tropical.Domain.Repositories.User;
 using Tropical.Domain.Security.Cryptography;
 using Tropical.Domain.Security.Tokens;
 using Tropical.Exceptions;
 using Tropical.Exceptions.Exceptions;
+using Tropical.Infrastructure.Data;
+using Tropical.Infrastructure.Security.Tokens.Refresh;
 
 namespace Tropical.Application.UseCases.User.Register
 {
@@ -17,6 +22,8 @@ namespace Tropical.Application.UseCases.User.Register
         private readonly IUserReadOnlyRepository _readOnlyRepository;
         private readonly IUnityOfWork _unityOfWork;
         private readonly IUserWriteOnlyRepository _writeOnlyRepository;
+        private readonly IRefreshTokenGenerator _refreshTokenGenerator;
+        private readonly ITokenRepository _tokenRepository;
         public RegisterUserUseCase(
             IUserReadOnlyRepository readOnlyRepository,
             IUserWriteOnlyRepository writeOnlyRepository,
@@ -24,7 +31,9 @@ namespace Tropical.Application.UseCases.User.Register
              IMapper mapper,
              IPasswordEncripter passwordEncripter
 ,
-             IAccessTokenGenerator accessTokenGenerator)
+             IAccessTokenGenerator accessTokenGenerator,
+             IRefreshTokenGenerator refreshTokenGenerator,
+             ITokenRepository tokenRepository)
         {
             _passwordEncripter = passwordEncripter;
             _readOnlyRepository = readOnlyRepository;
@@ -32,32 +41,37 @@ namespace Tropical.Application.UseCases.User.Register
             _writeOnlyRepository = writeOnlyRepository;
             _mapper = mapper;
             _accessTokenGenerator = accessTokenGenerator;
+            _refreshTokenGenerator = refreshTokenGenerator;
+            _tokenRepository = tokenRepository;
         }
 
         public async Task<ResponseRegisterUserJson>  Execute(RequestRegisterUserJson request)
         {  
            
            await Validate(request);
-            //validar
+            
 
             var user = _mapper.Map<Domain.Entities.User>(request);
-            //mapear 
+            
             user.Password = _passwordEncripter.Encrypt(request.Password);
-            //criptografia da senha
-            user.UserId=Guid.NewGuid(); // atribuindo o ID que será gerado no token 
+            
 
             await _writeOnlyRepository.AddUser(user);
             await _unityOfWork.Commit();
-            //salvar no db
 
-            var token = _accessTokenGenerator.Generate(user.UserId);
+            var refreshToken = await CreateAndSaveRefreshToken(user);
             return new ResponseRegisterUserJson
             {
                 Name = user.Name,
-                Token = token
+                Tokens = new ResponseTokensJson
+                {
+                    AccesToken = _accessTokenGenerator.Generate(user.UserId),
+                    RefreshToken=refreshToken
+                }
 
             };
         }
+
         private async  Task Validate(RequestRegisterUserJson user)
         {
             var validator = new RegisterUserValidator();//classe criada para validar os campos do user
@@ -74,6 +88,22 @@ namespace Tropical.Application.UseCases.User.Register
                 throw new ErrorOnValidationException(errorMessages);
             }
         }
+
+        private async Task<string> CreateAndSaveRefreshToken(Domain.Entities.User user)
+        {
+            var refreshToken = _refreshTokenGenerator.Generate();
+
+            await _tokenRepository.SaveNewRefreshToken(new RefreshToken()
+            {
+                Value = refreshToken,
+                UserId = user.Id
+            });
+
+            await _unityOfWork.Commit();
+
+            return refreshToken;
+        }
+
 
     }
 }
