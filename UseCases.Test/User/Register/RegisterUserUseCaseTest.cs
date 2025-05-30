@@ -6,6 +6,7 @@ using CommonTestUtilities.Tokens;
 using Tropical.Application.UseCases.User.Register;
 using Tropical.Exceptions;
 using Tropical.Exceptions.Exceptions;
+using Tropical.Infrastructure.Security.Tokens.Refresh;
 
 namespace UseCases.Test.User.Register
 {
@@ -23,7 +24,7 @@ namespace UseCases.Test.User.Register
             var result = await useCase.Execute(request);
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Token);
+            Assert.NotNull(result.Tokens);
             Assert.Equal(request.Name, result.Name);
 
         }
@@ -51,11 +52,14 @@ namespace UseCases.Test.User.Register
             var mapper = MapperBuilder.Build();
             var readOnlyRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
             var accessTokenGenerator = JwtTokenGeneratorBuilder.Build();
+            var refreshTokenGenerator = RefreshTokenGeneratorBuilder.Build();
+            var tokenRepository = new TokenRepositoryBuilder();
+            
             if (string.IsNullOrEmpty(email) == false)
             {
                 readOnlyRepositoryBuilder.ExistActiveUserWithEmail(email);
             }
-            return new RegisterUserUseCase(readOnlyRepositoryBuilder.Build(), writeOnlyRepository, unityOfWork, mapper, passwordEncrypter, accessTokenGenerator);
+            return new RegisterUserUseCase(readOnlyRepositoryBuilder.Build(), writeOnlyRepository, unityOfWork, mapper, passwordEncrypter, accessTokenGenerator,refreshTokenGenerator,tokenRepository.Build());
         }
 
         [Fact] // como já tem os testes do validator, eu só preciso testar um erro aqui

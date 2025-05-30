@@ -51,7 +51,7 @@ namespace Tropical.Application.UseCases.Token.RefreshToken
             return new ResponseTokensJson
             {
                 AccesToken = _accesTokenGenerator.Generate(refreshToken.User.UserId),
-                RefreshToken = refreshToken.Value
+                RefreshToken = newRefreshToken.Value
             };
         }
     }

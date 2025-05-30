@@ -145,6 +145,34 @@ namespace Tropical.Infrastructure.Migrations
                     b.ToTable("Recipes");
                 });
 
+            modelBuilder.Entity("Tropical.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Tropical.Domain.Entities.User", b =>
                 {
                     b.Property<long>("Id")
@@ -213,6 +241,17 @@ namespace Tropical.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Tropical.Domain.Entities.Recipe", b =>
+                {
+                    b.HasOne("Tropical.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Tropical.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Tropical.Domain.Entities.User", "User")
                         .WithMany()

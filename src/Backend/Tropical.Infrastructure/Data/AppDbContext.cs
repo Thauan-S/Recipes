@@ -16,7 +16,7 @@ namespace Tropical.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         { // informa para o entity framework utilizar as configurações de Dbcontext e DBset desta classe
-           // modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }

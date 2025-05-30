@@ -66,7 +66,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // adicionando backgroudService;
 if ( !builder.Configuration.IsUnitTestEnvironment()) {
     //se não for um teste de integação
-    builder.Services.AddHostedService<DeleteUserService>();
+     builder.Services.AddHostedService<DeleteUserService>();
     AddGoogleAuthentication();
 }
 builder.Services.AddScoped<ITokenProvider,HttpContextTokenValue>();

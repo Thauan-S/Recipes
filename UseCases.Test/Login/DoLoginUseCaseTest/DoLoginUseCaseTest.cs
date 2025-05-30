@@ -7,6 +7,8 @@ using Tropical.Application.UseCases.Login.DoLogin;
 using Tropical.Comunication.Requests;
 using Tropical.Exceptions;
 using Tropical.Exceptions.Exceptions;
+using Tropical.Infrastructure.Data;
+using Tropical.Infrastructure.Security.Tokens.Refresh;
 
 namespace UseCases.Test.Login.DoLoginUseCaseTest
 {
@@ -47,11 +49,15 @@ namespace UseCases.Test.Login.DoLoginUseCaseTest
             var accessTokenGenerator = JwtTokenGeneratorBuilder.Build();
              var passwordEncripter = PasswordEncrypterBuilder.Build();
             var userReadOnlyRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
+
+            var refreshTokenGenerator = RefreshTokenGeneratorBuilder.Build();
+            var tokenRepository =  new TokenRepositoryBuilder();
+            var unityOfWork = UnityOfWorkBuilder.Build();
             if (user != null)
             {
                 userReadOnlyRepositoryBuilder.GetByEmail(user);
             }
-              return new DoLoginUseCase( passwordEncripter, userReadOnlyRepositoryBuilder.Build(), accessTokenGenerator);
+              return new DoLoginUseCase( passwordEncripter, userReadOnlyRepositoryBuilder.Build(), accessTokenGenerator, refreshTokenGenerator, tokenRepository.Build(),unityOfWork);
         }
     }
 }
