@@ -15,7 +15,7 @@ namespace UseCases.Test.User.Register
         ///TODO USAR O MOQ
         [Fact(DisplayName = "Should retun true when the request is valid")]
         public async Task Success()
-        {
+        { 
             //Arrange 
             var request = RequestRegisterUserJsonBuilder.Build();
 
