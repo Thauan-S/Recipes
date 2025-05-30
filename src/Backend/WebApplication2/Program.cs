@@ -13,6 +13,8 @@ using System.Configuration;
 using Elastic.Apm.NetCoreAll;
 using Tropical.Infrastructure.Extensions;
 using Tropical.API.BackGroundServices;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Tropical.Infrastructure.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -75,9 +77,19 @@ builder.Services.AddHttpContextAccessor();
 
 
 // Microsoft.AspNetCore.Authentication.JwtBearer
-
+//habilitando healtechks para meu db no azure
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AppDbContext>();
 var app = builder.Build();
-
+//habilitando healtechks para minha api no azure
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    AllowCachingResponses = false,
+    ResultStatusCodes = {
+        [HealthStatus.Healthy]=StatusCodes.Status200OK,
+        [HealthStatus.Unhealthy]=StatusCodes.Status503ServiceUnavailable,
+    }
+});
 var serverUrls = builder.Configuration["ELASTIC_APM_SERVER_URLS"];
 Console.WriteLine($"APM Server URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: {serverUrls}");
 Console.WriteLine($"ENVIRONMENT!!!!!!!: {app.Environment.EnvironmentName}");
