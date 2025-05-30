@@ -7,6 +7,6 @@ namespace CommonTestUtilities.Tokens
     {
         public static IAccessTokenGenerator Build()=> 
             new JwtTokenGenerator(expirationTimeMinutes:5,
-                signingKey:"ttttttttttttttttttttttttttttttt");//32 caracteres
+                signingKey: "kjs93Jfnwq8sl02mvlsRjv39dlfjw93kwww");//32 ou +  caracteres
     }
 }
