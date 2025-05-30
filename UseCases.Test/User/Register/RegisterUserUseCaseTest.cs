@@ -121,16 +121,16 @@ namespace UseCases.Test.User.Register
             var result = validator.Validate(request);
             //Assert
 
-            var errors = result.Errors.Select(e => e.ErrorMessage);
+            var errors = result.Errors.Select(e => e.ErrorMessage).ToList();
             Assert.False(result.IsValid);
-            Assert.Single(ResourceMessagesException.INVALID_MAIL, errors);
+            Assert.Single(errors, ResourceMessagesException.INVALID_MAIL);
         }
-        [Fact(DisplayName = "Should retun false when the  request name is empty")]
+        [Fact(DisplayName = "Should retun false when the  password  is invalid")]
         public void ShouldReturnErrorWhenPasswordNotIsValid()
         {
             //Arrange 
             var request = RequestRegisterUserJsonBuilder.Build();
-            request.Password = "email.com";
+            request.Password = "a";
             var validator = new RegisterUserValidator();
 
             //Act
@@ -140,7 +140,7 @@ namespace UseCases.Test.User.Register
 
             var errors = result.Errors.Select(e => e.ErrorMessage);
             Assert.False(result.IsValid);
-            Assert.Single(ResourceMessagesException.INVALID_PASSWORD, errors);
+            Assert.Single(errors, ResourceMessagesException.INVALID_PASSWORD);
         }
         [Theory(DisplayName = "Should retun false when the  request name is empty")]
         [InlineData(1)]//posso passar mais de 1 parâmetro ex: (1,true)
