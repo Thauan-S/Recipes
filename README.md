@@ -14,7 +14,7 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - Suporte a verificação do tipo de arquivo com **File.TypeChecker**.
 
 ## Tecnologias e pacotes utilizados
-
+ 
 - **ASP.NET Core** (.NET 9.0)
 - **Entity Framework Core** (SQL Server e InMemory para testes)
 - **Azure.Messaging.ServiceBus** (emulação local via Docker)
