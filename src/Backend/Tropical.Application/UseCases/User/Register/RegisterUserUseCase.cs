@@ -7,6 +7,7 @@ using Tropical.Domain.Repositories.RefreshToken;
 using Tropical.Domain.Repositories.User;
 using Tropical.Domain.Security.Cryptography;
 using Tropical.Domain.Security.Tokens;
+using Tropical.Domain.Services.ServiceBus;
 using Tropical.Exceptions;
 using Tropical.Exceptions.Exceptions;
 using Tropical.Infrastructure.Data;
@@ -24,6 +25,7 @@ namespace Tropical.Application.UseCases.User.Register
         private readonly IUserWriteOnlyRepository _writeOnlyRepository;
         private readonly IRefreshTokenGenerator _refreshTokenGenerator;
         private readonly ITokenRepository _tokenRepository;
+        private readonly ISendEmailUserQueue _sendEmailUserQueue;
         public RegisterUserUseCase(
             IUserReadOnlyRepository readOnlyRepository,
             IUserWriteOnlyRepository writeOnlyRepository,
@@ -33,7 +35,8 @@ namespace Tropical.Application.UseCases.User.Register
 ,
              IAccessTokenGenerator accessTokenGenerator,
              IRefreshTokenGenerator refreshTokenGenerator,
-             ITokenRepository tokenRepository)
+             ITokenRepository tokenRepository,
+             ISendEmailUserQueue sendEmailUserQueue)
         {
             _passwordEncripter = passwordEncripter;
             _readOnlyRepository = readOnlyRepository;
@@ -43,6 +46,7 @@ namespace Tropical.Application.UseCases.User.Register
             _accessTokenGenerator = accessTokenGenerator;
             _refreshTokenGenerator = refreshTokenGenerator;
             _tokenRepository = tokenRepository;
+            _sendEmailUserQueue = sendEmailUserQueue;
         }
 
         public async Task<ResponseRegisterUserJson>  Execute(RequestRegisterUserJson request)
@@ -58,6 +62,8 @@ namespace Tropical.Application.UseCases.User.Register
 
             await _writeOnlyRepository.AddUser(user);
             await _unityOfWork.Commit();
+
+            await _sendEmailUserQueue.SendMessage(user.Email);
 
             var refreshToken = await CreateAndSaveRefreshToken(user);
             return new ResponseRegisterUserJson

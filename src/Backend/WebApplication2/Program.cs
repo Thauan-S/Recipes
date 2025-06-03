@@ -69,6 +69,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 if ( !builder.Configuration.IsUnitTestEnvironment()) {
     //se não for um teste de integação
      builder.Services.AddHostedService<DeleteUserService>();
+    builder.Services.AddHostedService<SendEmailToNewUserService>();
     AddGoogleAuthentication();
 }
 builder.Services.AddScoped<ITokenProvider,HttpContextTokenValue>();

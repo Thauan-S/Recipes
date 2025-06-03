@@ -46,8 +46,13 @@ namespace Tropical.Infrastructure
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(connectionString,
+                
                 options => options.MigrationsAssembly("Tropical.Infrastructure"));// cria as migrations a partir do propeto de infra
-            });
+            });//Por padrão, o EF Core tenta colocar as Migrations no mesmo projeto onde o DbContext está.
+            //var serviceProvider = services.BuildServiceProvider();
+            //var db = serviceProvider.GetRequiredService<AppDbContext>();
+            //    db.Database.Migrate();
+            
         }
 
         private static void AddInfrastructure(IServiceCollection services)
@@ -72,13 +77,12 @@ namespace Tropical.Infrastructure
         private static void AddServiceBus(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString= configuration.GetValue<string>("Settings:ServiceBus:DeleteUserAccount");
-
+             
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetRequiredService<ILoggerFactory>()
                                         .CreateLogger("DependencyInjectionExtension");
 
-            logger.LogInformation("Service Bus connection string!!!!!!!!!!!!!!!: {ConnectionString}", connectionString);
-
+            logger.LogInformation("Service Bus connection string!: {ConnectionString}", connectionString);
 
             if (string.IsNullOrWhiteSpace(connectionString))
             {// verifica testes de integração 
@@ -92,14 +96,19 @@ namespace Tropical.Infrastructure
             });
             // estou simulando o serviceBus Localmente no docker
             var deletequeue = new DeleteUserQueue(client.CreateSender("queue.1"));
-
+            var emailqueue = new SendEmailUserQueue(client.CreateSender("emailqueue.1"));
+            var sendEmailUserProcessor = new SendEmailUserProccessor(client.CreateProcessor("emailqueue.1",new ServiceBusProcessorOptions()
+            {
+                MaxConcurrentCalls=1,
+            }));
             var deleteUserProcessor = new DeleteUserProcessor(client.CreateProcessor("queue.1", new ServiceBusProcessorOptions()
             {
                 MaxConcurrentCalls = 1 ,//recebe apenas 1 mensagem e processa;
             }));
             services.AddSingleton(deleteUserProcessor);
+            services.AddSingleton(sendEmailUserProcessor);
             services.AddScoped<IDeleteUserQueue>(options => deletequeue);
-            
+            services.AddScoped<ISendEmailUserQueue>(options => emailqueue);
         }
         private static void AddTokens(IServiceCollection services, IConfiguration configuration)
         {

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sqids;
 using Tropical.Application.Services.autoMapper;
+using Tropical.Application.UseCases.Email;
 using Tropical.Application.UseCases.Login.DoLogin;
 using Tropical.Application.UseCases.Login.ExternalLogin;
 using Tropical.Application.UseCases.Recipe;
@@ -31,7 +32,7 @@ namespace Tropical.Application
         {                 
             AddAutoMapper(services);
             AddIdEncoder(services, configuration);
-            AddUseCases(services);
+            AddUseCases(services,configuration);
         }
         private static void AddAutoMapper(IServiceCollection services)
         {
@@ -43,7 +44,7 @@ namespace Tropical.Application
 
                 }).CreateMapper());
         }
-        private static void AddUseCases(IServiceCollection services)
+        private static void AddUseCases(IServiceCollection services,IConfiguration configuration)
         {
             services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
             services.AddScoped<IDoLoginUseCase, DoLoginUseCase>();
@@ -53,7 +54,11 @@ namespace Tropical.Application
             services.AddScoped<IRequestDeleteUserUseCase, RequestDeleteUserUseCase>();
             services.AddScoped<IDeleteUserAccountUseCase, DeleteUserAccountUseCase>();
             services.AddScoped<IUserRefreshTokenUseCase, UserRefreshTokenUseCase>();
-            
+
+            //factory method
+            var appKey = configuration.GetValue<string>("Settings:Google:AppKey")!;
+            var email = configuration.GetValue<string>("Settings:Google:Email")!;
+            services.AddScoped<ISendEmailUserUseCase>(sp=> new SendEmailUserUseCase(appKey,email));
 
             services.AddScoped<IExternalLoginUseCase, ExternalLoginUseCase>();
 
