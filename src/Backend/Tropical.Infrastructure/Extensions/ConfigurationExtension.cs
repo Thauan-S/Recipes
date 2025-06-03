@@ -11,7 +11,7 @@ namespace Tropical.Infrastructure.Extensions
 
         public static string ConnectionString(this  IConfiguration configuration)
         {
-            return configuration.GetConnectionString("DefaultConnection");
+            return configuration.GetConnectionString("DefaultConnection")!;
         }
     }
 }

@@ -15,6 +15,7 @@ using Tropical.Infrastructure.Extensions;
 using Tropical.API.BackGroundServices;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Tropical.Infrastructure.Data;
+using Tropical.API.RateLimiterConfig;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -55,13 +56,15 @@ builder.Services.AddSwaggerGen(options =>
     });
 builder.Services.AddMvc(options=>options.Filters.Add(typeof (ExceptionFilter)));
 
+
+builder.Services.AddRateLimiter(options => options.AddPolicy<string, RateLimiterConfig>("ResetPasswordLimiter"));
 //define todas as urls para minúsculo
 builder.Services.AddRouting(options=>
 options.LowercaseUrls=true);
 
 
 // DI
-builder.Services.AddAplication(builder.Configuration);//As dependencias são injetadas em Dependency InjectionExtension
+builder.Services.AddAplication(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -109,7 +112,8 @@ else
 app.UseMiddleware<CultureMiddleware>();
 
 app.UseAuthorization();
-
+//deve ser chamado após o useAuthorization, assim ele pode ler o contexto de autenticação.
+app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();

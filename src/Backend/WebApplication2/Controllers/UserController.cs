@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Tropical.API.Attributes;
 using Tropical.Application.UseCases.User.ChangePassword;
 using Tropical.Application.UseCases.User.Delete.RequestDeleteUseCase;
@@ -47,7 +48,7 @@ namespace Tropical.API.Controllers
         }
         [HttpPut("change-password")]
         [AuthenticatedUser]
-        
+        [EnableRateLimiting("ResetPasswordLimiter")]
         public async Task<IActionResult> ChangePassword(
            [FromServices] IChangePasswordUseCase useCase,
            [FromBody] RequestChangePasswordUserJson request
