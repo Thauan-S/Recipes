@@ -12,7 +12,7 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - Mapeamento de objetos com **AutoMapper** para facilitar a transformação entre modelos e DTOs.
 - Geração de IDs únicos com **Sqids**.
 - Suporte a verificação do tipo de arquivo com **File.TypeChecker**.
-
+- análise de qualidade de código com sonarCloud através dos pipelines do azure.
 ## Tecnologias e pacotes utilizados
  
 - **ASP.NET Core** (.NET 9.0)
@@ -31,6 +31,6 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - Utilização de **xUnit** para testes unitários e de integração.
 - Cobertura de testes com **coverlet.collector**.
 - Testes end-to-end com **Microsoft.AspNetCore.Mvc.Testing**.
-##Instalando o azurite docker pull mcr.microsoft.com/azure-storage/azurite
+## Instalando o azurite:  docker pull mcr.microsoft.com/azure-storage/azurite
 
 
