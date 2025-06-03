@@ -1,4 +1,6 @@
-﻿using Tropical.Domain.Dtos;
+﻿using System.Text;
+using Tropical.Comunication.Pagination;
+using Tropical.Domain.Dtos;
 
 namespace Tropical.Domain.Repositories.Recipe
 {
@@ -7,6 +9,6 @@ namespace Tropical.Domain.Repositories.Recipe
         Task<IList<Entities.Recipe>> Filter(Entities.User user, FilterRecipesDto filters);
         Task<Entities.Recipe?> GetById(Entities.User user, long recipeId);
         Task<bool> RecipeExists(Entities.User user, long recipeId);
-        Task<IList<Entities.Recipe>> GetForDashBoard(Entities.User user);
+        Task<IList<Entities.Recipe>> GetForDashBoard(Entities.User user,PaginationParameters parameters);
     }
 }

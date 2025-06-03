@@ -3,6 +3,7 @@
 using AutoMapper;
 using Tropical.Application.Extension;
 using Tropical.Application.UseCases.Recipe.Delete;
+using Tropical.Comunication.Pagination;
 using Tropical.Comunication.Responses;
 using Tropical.Domain.Repositories.Recipe;
 using Tropical.Domain.Services.LoggedUser;
@@ -24,10 +25,10 @@ namespace Tropical.Application.UseCases.Recipe.DashBoard
             _blobStorageService = blobStorageService;
         }
 
-        public async Task<ResponseRecipesJson> Execute()
+        public async Task<ResponseRecipesJson> Execute(PaginationParameters parameters)
         {
             var loggedUser=await _loggedUser.User();
-            var recipes = await _repository.GetForDashBoard(loggedUser);
+            var recipes = await _repository.GetForDashBoard(loggedUser,parameters);
             return new ResponseRecipesJson
             {
                

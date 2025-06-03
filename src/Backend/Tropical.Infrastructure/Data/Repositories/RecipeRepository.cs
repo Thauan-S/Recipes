@@ -4,6 +4,7 @@ using Tropical.Domain.Entities;
 using Tropical.Domain.Repositories.Recipe;
 using Tropical.Domain.Repositories.User;
 using Microsoft.EntityFrameworkCore.Query;
+using Tropical.Comunication.Pagination;
 
 namespace Tropical.Infrastructure.Data.Repositories
 {
@@ -95,15 +96,16 @@ namespace Tropical.Infrastructure.Data.Repositories
                  .Include(recipe => recipe.DishTypes);
         }
 
-        public async Task<IList<Recipe>> GetForDashBoard(User user)
+        public async Task<IList<Recipe>> GetForDashBoard(User user,PaginationParameters parameters)
         {
             return await _appDbContext
                  .Recipes
                  .AsNoTracking()
+                 .Skip((parameters.Page-1)*parameters.Page)
                  .Include(recipe => recipe.Ingredients)
                  .Where(recipe => recipe.Active && recipe.UserId == user.Id)
                  .OrderByDescending(recipe => recipe.CreatedOn)
-                 .Take(5)
+                 .Take(parameters.PageSize)
                  .ToListAsync() ;
         }
     }
