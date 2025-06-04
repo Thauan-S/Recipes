@@ -23,6 +23,7 @@ using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Logging;
 using Tropical.Infrastructure.Security.Tokens.Refresh;
 using Tropical.Domain.Repositories.RefreshToken;
+using Tropical.Infrastructure.Services.Caching;
 
 
 namespace Tropical.Infrastructure
@@ -49,10 +50,16 @@ namespace Tropical.Infrastructure
                 
                 options => options.MigrationsAssembly("Tropical.Infrastructure"));// cria as migrations a partir do propeto de infra
             });//Por padrão, o EF Core tenta colocar as Migrations no mesmo projeto onde o DbContext está.
-            //var serviceProvider = services.BuildServiceProvider();
-            //var db = serviceProvider.GetRequiredService<AppDbContext>();
-            //    db.Database.Migrate();
-            
+            var serviceprovider = services.BuildServiceProvider();
+            var db = serviceprovider.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetValue<string>("Settings:Redis:Connection");
+                options.InstanceName = "SampleInstance";
+            });
+
+
         }
 
         private static void AddInfrastructure(IServiceCollection services)
@@ -73,6 +80,9 @@ namespace Tropical.Infrastructure
             services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepository>();
 
             services.AddScoped<ITokenRepository, RefreshTokenRepository>();
+
+            services.AddScoped<ICachingService, CacheService>();
+
         }
         private static void AddServiceBus(IServiceCollection services, IConfiguration configuration)
         {
