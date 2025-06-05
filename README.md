@@ -17,10 +17,14 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
  
 - **ASP.NET Core** (.NET 9.0)
 - **Entity Framework Core** (SQL Server e InMemory para testes)
+-  **Redis**
+- **Rate Limiter**
 - **Azure.Messaging.ServiceBus** (emulação local via Docker)
 - **Azure.Storage.Blobs** (emulação local via Docker)
-- **System.IdentityModel.Tokens.Jwt** (para autenticação JWT)
+- **System.IdentityModel.Tokens.Jwt** 
 - **AutoMapper**
+-  **Bogus**
+-  **Moq**
 - **FluentValidation**
 - **Sqids**
 - **File.TypeChecker**
