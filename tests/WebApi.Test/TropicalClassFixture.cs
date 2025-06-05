@@ -7,7 +7,7 @@ namespace WebApi.Test
         private readonly HttpClient _httpClient;
         public TropicalClassFixture(CustomWebApplicationFactory factory)
         {
-            _httpClient = factory.CreateClient();//cria um httpclient
+            _httpClient = factory.CreateClient();
 
         } ///TODO USAR O MOQ
         protected async Task<HttpResponseMessage> DoPost(string method, object request, string culture = "en")

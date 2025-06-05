@@ -50,9 +50,9 @@ namespace Tropical.Infrastructure
                 
                 options => options.MigrationsAssembly("Tropical.Infrastructure"));// cria as migrations a partir do propeto de infra
             });//Por padrão, o EF Core tenta colocar as Migrations no mesmo projeto onde o DbContext está.
-            var serviceprovider = services.BuildServiceProvider();
-            var db = serviceprovider.GetRequiredService<AppDbContext>();
-            db.Database.Migrate();
+            ////var serviceprovider = services.BuildServiceProvider();
+            ////var db = serviceprovider.GetRequiredService<AppDbContext>();
+            ////db.Database.Migrate();
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = configuration.GetValue<string>("Settings:Redis:Connection");
