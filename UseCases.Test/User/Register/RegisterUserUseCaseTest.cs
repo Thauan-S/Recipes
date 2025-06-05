@@ -3,7 +3,10 @@ using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using CommonTestUtilities.Tokens;
+using Moq;
 using Tropical.Application.UseCases.User.Register;
+using Tropical.Domain.Repositories.RefreshToken;
+using Tropical.Domain.Services.ServiceBus;
 using Tropical.Exceptions;
 using Tropical.Exceptions.Exceptions;
 using Tropical.Infrastructure.Security.Tokens.Refresh;
@@ -12,6 +15,10 @@ namespace UseCases.Test.User.Register
 {
     public class RegisterUserUseCaseTest
     {
+        public static readonly Mock<ISendEmailUserQueue> _sendEmailUserQueueMock= new Mock<ISendEmailUserQueue>();
+
+  
+
         ///TODO USAR O MOQ
         [Fact(DisplayName = "Should retun true when the request is valid")]
         public async Task Success()
@@ -54,12 +61,12 @@ namespace UseCases.Test.User.Register
             var accessTokenGenerator = JwtTokenGeneratorBuilder.Build();
             var refreshTokenGenerator = RefreshTokenGeneratorBuilder.Build();
             var tokenRepository = new TokenRepositoryBuilder();
-            
+            //var sendEmailUserQueue = SendEmailUserQueueBuilder.Build();
             if (string.IsNullOrEmpty(email) == false)
             {
                 readOnlyRepositoryBuilder.ExistActiveUserWithEmail(email);
             }
-            return new RegisterUserUseCase(readOnlyRepositoryBuilder.Build(), writeOnlyRepository, unityOfWork, mapper, passwordEncrypter, accessTokenGenerator,refreshTokenGenerator,tokenRepository.Build());
+            return new RegisterUserUseCase(readOnlyRepositoryBuilder.Build(), writeOnlyRepository, unityOfWork, mapper, passwordEncrypter, accessTokenGenerator,refreshTokenGenerator,tokenRepository.Build(), _sendEmailUserQueueMock.Object);
         }
 
         [Fact] // como já tem os testes do validator, eu só preciso testar um erro aqui
