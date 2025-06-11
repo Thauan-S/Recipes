@@ -87,7 +87,7 @@ namespace Tropical.Infrastructure.Data.Repositories
             _appDbContext.Recipes.Update(recipe);
         }
 
-        private IIncludableQueryable<Recipe, IList<DishType>> GetFullRecipe()
+        private IIncludableQueryable<Recipe, IList<DishTypeDto>> GetFullRecipe()
         {   // já que utilizo essses includes nos dois métodos
             return _appDbContext
                  .Recipes
@@ -98,15 +98,13 @@ namespace Tropical.Infrastructure.Data.Repositories
 
         public async Task<IList<Recipe>> GetForDashBoard(User user,PaginationParameters parameters)
         {
-            return await _appDbContext
-                 .Recipes
+            return await GetFullRecipe()
                  .AsNoTracking()
-                 .Skip((parameters.Page-1)*parameters.Page)
-                 .Include(recipe => recipe.Ingredients)
+                 .Skip((parameters.Page-1)*parameters.Page)  
                  .Where(recipe => recipe.Active && recipe.UserId == user.Id)
                  .OrderByDescending(recipe => recipe.CreatedOn)
                  .Take(parameters.PageSize)
-                 .ToListAsync() ;
+                 .ToListAsync();
         }
     }
 }

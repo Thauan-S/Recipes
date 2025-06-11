@@ -43,7 +43,7 @@ namespace Tropical.Application.UseCases.Recipe.DashBoard
 
             var recipesCache = await _cachingService.GetAsync(loggedUser.Id.ToString());
             if (!string.IsNullOrWhiteSpace(recipesCache) ) {
-               var recipe = JsonConvert.DeserializeObject<IList<ResponseShortRecipeJson>>(recipesCache);
+               var recipe = JsonConvert.DeserializeObject<IList<ResponseShortRecipeJson>>(recipesCache)!;
 
                 return new ResponseRecipesJson
                 {
@@ -55,7 +55,7 @@ namespace Tropical.Application.UseCases.Recipe.DashBoard
            
 
             if (recipes.Count>0) {
-                await _cachingService.SetAsync(loggedUser.Id.ToString(), JsonConvert.SerializeObject(RecipesDto.EntityToDto(recipes)));
+                await _cachingService.SetAsync(loggedUser.Id.ToString(),JsonConvert.SerializeObject(await recipes.MapToShortRecipeJson(loggedUser,_blobStorageService,_mapper)));// JsonConvert.SerializeObject(RecipesDto.EntityToDto(recipes)));
             }
                 return new ResponseRecipesJson
             {
