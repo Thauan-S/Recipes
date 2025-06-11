@@ -87,7 +87,7 @@ namespace Tropical.Infrastructure.Data.Repositories
             _appDbContext.Recipes.Update(recipe);
         }
 
-        private IIncludableQueryable<Recipe, IList<DishTypeDto>> GetFullRecipe()
+        private IIncludableQueryable<Recipe, IList<DishType>> GetFullRecipe()
         {   // já que utilizo essses includes nos dois métodos
             return _appDbContext
                  .Recipes

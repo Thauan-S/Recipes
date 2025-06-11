@@ -4,6 +4,8 @@ using Tropical.Comunication.Requests;
 using Tropical.Comunication.Responses;
 using Tropical.Comunication.Enums;
 using Sqids;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Tropical.Application.Services.autoMapper
 {
@@ -53,8 +55,10 @@ namespace Tropical.Application.Services.autoMapper
                .ForMember(dest => dest.DishTypes, config => config.MapFrom(recipe => recipe.DishTypes.Select(r=>r.Type)));
 
             CreateMap<Domain.Entities.Ingredient, ResponseIngredientJson>()
-               .ForMember(dest => dest.Id, config => config.MapFrom(ingretient => _idEncoder.Encode(ingretient.Id)));
-
+    .ForMember(dest => dest.Id, config => config.MapFrom(ingredient => _idEncoder.Encode(ingredient.Id)))
+    .ForMember(dest => dest.Item, config => config.MapFrom(ingredient =>
+        JsonConvert.DeserializeObject<IList<string>>(ingredient.Item) ?? new List<string>()
+    ));
             CreateMap<Domain.Entities.Instruction, ResponseInstructionJson>()
             .ForMember(dest => dest.Id, config => config.MapFrom(instruction => _idEncoder.Encode(instruction.Id)));
 
