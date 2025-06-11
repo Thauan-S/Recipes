@@ -49,8 +49,9 @@ public LoginController(ILogger<LoginController> logger)
                 var userName = claims.First(c => c.Type ==ClaimTypes.Name).Value;
                 var userMail = claims.First(c => c.Type ==ClaimTypes.Email).Value;
                 var token = await useCase.Execute(userName, userMail);
-                
-                return Redirect($"{returnUrl}/{token}");
+                //TODO encontrar outra forma de devolver o token: cookies
+                var encodedToken = Uri.EscapeDataString(token);
+                return Redirect($"{returnUrl}/{encodedToken}");
             }
         }
     }

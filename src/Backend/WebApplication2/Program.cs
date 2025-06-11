@@ -16,6 +16,7 @@ using Tropical.API.BackGroundServices;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Tropical.Infrastructure.Data;
 using Tropical.API.RateLimiterConfig;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -84,6 +85,13 @@ builder.Services.AddHttpContextAccessor();
 //habilitando healtechks para meu db no azure
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AppDbContext>();
+
+builder.Services.AddCors(options => options.AddPolicy("MyCorsPolicy", policy =>
+{
+    policy.WithOrigins("http://localhost:5173") 
+          .AllowAnyHeader()  
+          .AllowAnyMethod();                     
+}));
 var app = builder.Build();
 //habilitando healtechks para minha api no azure
 app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
@@ -115,7 +123,7 @@ app.UseAuthorization();
 //deve ser chamado após o useAuthorization, assim ele pode ler o contexto de autenticação.
 app.UseRateLimiter();
 app.MapControllers();
-
+app.UseCors("MyCorsPolicy");
 app.Run();
 void AddGoogleAuthentication()
 {
@@ -130,8 +138,7 @@ void AddGoogleAuthentication()
     {
         googleOptions.ClientId = clientId;
         googleOptions.ClientSecret = clientSecret;
-    })
-    ;
+    });
     ///TODO ADD other 
 }
 public partial class Program
