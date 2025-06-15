@@ -42,7 +42,7 @@ namespace Tropical.Application.UseCases.Recipe.Register
 
             recipe.UserId = loggedUser.Id;
 
-            var instructions = recipe.Instructions.OrderBy(i => i.Step).ToList();
+            var instructions = request.Instructions.OrderBy(i => i.Step).ToList();
             for (int i = 0; i < instructions.Count; i++)
             {
                 instructions[i].Step = i + 1;

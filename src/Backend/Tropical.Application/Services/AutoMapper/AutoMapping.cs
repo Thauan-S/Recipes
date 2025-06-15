@@ -56,9 +56,7 @@ namespace Tropical.Application.Services.autoMapper
 
             CreateMap<Domain.Entities.Ingredient, ResponseIngredientJson>()
     .ForMember(dest => dest.Id, config => config.MapFrom(ingredient => _idEncoder.Encode(ingredient.Id)))
-    .ForMember(dest => dest.Item, config => config.MapFrom(ingredient =>
-        JsonConvert.DeserializeObject<IList<string>>(ingredient.Item) ?? new List<string>()
-    ));
+    .ForMember(dest => dest.Item, config => config.MapFrom(ingredient =>ingredient.Item));
             CreateMap<Domain.Entities.Instruction, ResponseInstructionJson>()
             .ForMember(dest => dest.Id, config => config.MapFrom(instruction => _idEncoder.Encode(instruction.Id)));
 

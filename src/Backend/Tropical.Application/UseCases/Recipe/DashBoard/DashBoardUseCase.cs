@@ -38,7 +38,6 @@ namespace Tropical.Application.UseCases.Recipe.DashBoard
         {   
             var responseShortRecipeJson = new ResponseRecipesJson();
 
-            IList <RecipesDto>? recipesDto;
             var loggedUser=await _loggedUser.User();
 
             var recipesCache = await _cachingService.GetAsync(loggedUser.Id.ToString());

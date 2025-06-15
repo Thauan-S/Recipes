@@ -3,6 +3,6 @@
     public class ResponseIngredientJson
     {
         public string Id { get; set; } = string.Empty;
-        public IList<string> Item { get; set; } = [];
+        public string Item { get; set; } = string.Empty;
     }
 }

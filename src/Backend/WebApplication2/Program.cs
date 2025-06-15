@@ -118,12 +118,13 @@ else
     app.UseHttpsRedirection();
 }
 app.UseMiddleware<CultureMiddleware>();
-
+app.UseCors("MyCorsPolicy");
+app.UseAuthentication();
 app.UseAuthorization();
 //deve ser chamado após o useAuthorization, assim ele pode ler o contexto de autenticação.
 app.UseRateLimiter();
 app.MapControllers();
-app.UseCors("MyCorsPolicy");
+
 app.Run();
 void AddGoogleAuthentication()
 {
