@@ -18,7 +18,7 @@ namespace Tropical.Infrastructure.Services.Caching
             _cache = cache;
             _options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60),
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
                 SlidingExpiration = TimeSpan.FromSeconds(50),
                 
             };
@@ -27,6 +27,11 @@ namespace Tropical.Infrastructure.Services.Caching
         public async Task<string> GetAsync(string key)
         {
             return await _cache.GetStringAsync(key);
+        }
+
+        public async Task RemoveAsync(string key)
+        {
+            await _cache.RemoveAsync(key);
         }
 
         public async Task SetAsync(string key, string value)
