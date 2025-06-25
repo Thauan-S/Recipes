@@ -35,6 +35,7 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - Utilização de **xUnit** para testes unitários e de integração.
 - Cobertura de testes com **coverlet.collector**.
 - Testes end-to-end com **Microsoft.AspNetCore.Mvc.Testing**.
+  
 ## Instalando o azurite:  docker pull mcr.microsoft.com/azure-storage/azurite
-
+[🔍 Acessar Diagrama ER no Lucidchart](https://lucid.app/lucidchart/379f450c-1d39-4052-acab-d7f8297410dc/edit?viewport_loc=-1767%2C-350%2C3327%2C1407%2C0_0&invitationId=inv_8a1053e4-dda1-4b5c-8d86-b4b5755561f5)
 
