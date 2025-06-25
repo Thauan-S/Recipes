@@ -5,7 +5,7 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 ## Principais funcionalidades
 
 - **API RESTful** para gerenciamento completo das receitas.
-- **Autenticação e autorização** usando **Tokens JWT e Google ** para garantir segurança no acesso.
+- **Autenticação e autorização** usando Tokens JWT e Google Authentication para garantir segurança no acesso.
 - Implementação de persistência de dados com **Entity Framework Core** e banco de dados SQL Server.
 - Emulação local de serviços Azure com **Service Bus** e **Blob Storage** utilizando **Docker**, para garantir escalabilidade e integração com microsserviços e armazenamento de arquivos.
 - Validação de dados usando **FluentValidation** para garantir integridade e qualidade das informações.
