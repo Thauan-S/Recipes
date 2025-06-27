@@ -29,6 +29,7 @@ Este projeto é uma aplicação de **livro de receitas** desenvolvida com **ASP.
 - **Sqids**
 - **File.TypeChecker**
 - **ElasticApm**(Para Observabilidade)
+- **SonarQube**(Para garantia de qualidade de código)
 - **Microsoft.AspNetCore.Authentication.Google**
 ## Testes automatizados
 
