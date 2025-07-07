@@ -1,0 +1,4 @@
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'DDD')
+BEGIN
+    CREATE DATABASE [DDD];
+END

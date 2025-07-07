@@ -1,0 +1,154 @@
+name: microsoft-azure-servicebus-emulator
+services:
+  tropical:
+    build:
+      context: /Recipes
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:5001"
+    depends_on:
+      - apm-server
+      - emulator
+      - sqledge
+      - azurite
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ELASTIC_APM_SERVER_URLS=http://apm-server:8200
+      - ELASTIC_APM_SERVICE_NAME=minha-aplicacao-dotnet
+      - ELASTIC_APM_SECRET_TOKEN=changeme
+    networks:
+      - sb-emulator
+      - elastic
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000" # Blob service
+      - "10001:10001" # Queue service
+      - "10002:10002" # Table service
+    networks:
+      - sb-emulator
+  emulator:
+    container_name: "servicebus-emulator"
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    pull_policy: always
+    volumes:
+      - "${CONFIG_PATH}:/ServiceBus_Emulator/ConfigFiles/Config.json"
+    ports:
+      - "5672:5672"
+      - "5300:5300"
+    environment:
+      SQL_SERVER: sqledge
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"  # Password should be same as what is set for SQL Edge  
+      ACCEPT_EULA: ${ACCEPT_EULA}
+      SQL_WAIT_INTERVAL: 60 # Optional: Time in seconds to wait for SQL to be ready (default is 15 seconds)
+    depends_on:
+      - sqledge
+    networks:
+      sb-emulator:
+        aliases:
+          - "sb-emulator"
+  sqledge:
+        container_name: "sqledge"
+        image: "mcr.microsoft.com/azure-sql-edge:latest"
+        ports:
+          - "1433:1433"
+        networks:
+          sb-emulator:
+            aliases:
+              - "sqledge"
+        environment:
+          ACCEPT_EULA: ${ACCEPT_EULA}
+          MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}" # To be filled by user as per policy : https://learn.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-linux-ver16 
+        volumes:
+         - ./sql/init:/init-scripts
+        command: >
+          bash -c "
+          /opt/mssql/bin/sqlservr & 
+          sleep 20 &&
+          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $${MSSQL_SA_PASSWORD} -i /init-scripts/init.sql &&
+          tail -f /dev/null
+          "
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.17.27
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+    - 8200:8200
+    networks:
+    - elastic
+    command: >
+       apm-server -e
+         -E apm-server.rum.enabled=true
+         -E setup.kibana.host=kibana:5601
+         -E setup.template.settings.index.number_of_replicas=0
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=kibana:5601
+         -E output.elasticsearch.hosts=["elasticsearch:9200"]
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.27
+    environment:
+    - bootstrap.memory_lock=true
+    - cluster.name=docker-cluster
+    - cluster.routing.allocation.disk.threshold_enabled=false
+    - discovery.type=single-node
+    - ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+    volumes:
+    - esdata:/usr/share/elasticsearch/data
+    ports:
+    - 9200:9200
+    networks:
+    - elastic
+    healthcheck:
+      interval: 20s
+      retries: 10
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.27
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+    - 5601:5601
+    networks:
+    - elastic
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+
+volumes:
+  esdata:
+    driver: local
+
+networks:
+  sb-emulator:
+  elastic:
+    driver: bridge
